@@ -51,7 +51,7 @@ public class CreateSession extends Activity {
 			}
 		});
 
-		final Button confirmbutton = (Button) findViewById(R.id.button1);
+		final Button confirmbutton = (Button) findViewById(R.id.sendfilebutton);
 		confirmbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				if (existFilePath()){
@@ -131,7 +131,7 @@ public void enableBluetooth(){
 	Set<BluetoothDevice> pairedDevices = bA.getBondedDevices();
 	List<String> s = new ArrayList<String>();
 	for(BluetoothDevice bt : pairedDevices){
-		s.add(bt.getName());
+		s.add(bt.getName() + " - " + bt.getAddress() + "\n");
 	}
 
 	//Update TextView with list of Bluetooth Devices
