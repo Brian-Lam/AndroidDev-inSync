@@ -1,13 +1,17 @@
 package com.example.insync;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.bluetooth.*;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.app.Activity;
 import android.view.Menu;
@@ -23,6 +27,9 @@ public class CreateSession extends Activity {
 	String globalPath = "";
 
 	MediaPlayer buttonClick = null;
+	
+	// Local BluetoothAdapter
+	private BluetoothAdapter bA = BluetoothAdapter.getDefaultAdapter();
 
 	// Variable: Number of seconds during which the device will be Bluetooth
 	// discoverable
@@ -72,7 +79,7 @@ public class CreateSession extends Activity {
 			public void onClick(View v) {
 				if (existFilePath()) {
 					buttonClick.start();
-					hostBluetooth(getFilePath());
+					sendFile();
 				} else {
 					buttonClick.start();
 					final TextView fnTV = (TextView) findViewById(R.id.fileNameTextView);
@@ -122,13 +129,6 @@ public class CreateSession extends Activity {
 		}
 	}
 
-	public void hostBluetooth(String filePath) {
-		buttonClick.start();
-		Intent intent = new Intent(this, BluetoothHost.class);
-		intent.putExtra("filepath", filePath);
-		startActivity(intent);
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -150,6 +150,7 @@ public class CreateSession extends Activity {
 		// Enable device discovery
 		enableBlu();
 
+		/*
 		// List all paired Bluetooth Devices
 		Set<BluetoothDevice> pairedDevices = bA.getBondedDevices();
 		List<String> s = new ArrayList<String>();
@@ -167,7 +168,7 @@ public class CreateSession extends Activity {
 		// Update TextView with list of Bluetooth Devices
 		final TextView btDevTV = (TextView) findViewById(R.id.bluetoothTV);
 		btDevTV.append("\n" + listString);
-
+		*/
 	}
 
 	public void enableBlu() {
@@ -190,5 +191,43 @@ public class CreateSession extends Activity {
             startActivity(discoverableIntent);
         }
     }
+	
+	public void sendFile() {
+		if (bA == null) {
+			// Device does not support Bluetooth
+			return;
+		}
+
+		// Bring up Android's Bluetooth Device chooser
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(globalPath)));
+		// ...
+
+		// list of apps that can handle our intent
+		PackageManager pm = getPackageManager();
+		List<ResolveInfo> appsList = pm.queryIntentActivities(intent, 0);
+
+		if (appsList.size() > 0) {
+			// proceed
+			// select bluetooth
+			String packageName = null;
+			String className = null;
+
+			for (ResolveInfo info : appsList) {
+				packageName = info.activityInfo.packageName;
+				if (packageName.equals("com.android.bluetooth")) {
+					className = info.activityInfo.name;
+					break;// found
+				}
+			}
+
+			// set our intent to launch Bluetooth
+			intent.setClassName(packageName, className);
+			startActivity(intent);
+
+		}
+	}
 
 }

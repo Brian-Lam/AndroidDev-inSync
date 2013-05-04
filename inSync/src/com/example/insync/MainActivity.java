@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
 
 	public void test(View view) {
 		buttonClick.start();
-		Intent intent = new Intent(this, BluetoothGuest.class);
-		startActivity(intent);
+		//Intent intent = new Intent(this, BluetoothGuest.class);
+		//startActivity(intent);
 	}
 }

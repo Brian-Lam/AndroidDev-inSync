@@ -43,22 +43,13 @@
             android:text="@string/chosenfile"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
-            android:id="@+id/bluetoothTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/fileNameTextView"
-            android:layout_below="@+id/fileNameTextView"
-            android:text="@string/connectedBTDevices"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
         <Button
             android:id="@+id/sendfilebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/bluetoothTV"
-            android:layout_below="@+id/bluetoothTV"
-            android:text="@string/confirm" />
+            android:layout_alignLeft="@+id/fileNameTextView"
+            android:layout_below="@+id/fileNameTextView"
+            android:text="@string/sendmp3file" />
 
         <TextView
             android:id="@+id/bluetoothCheck"
